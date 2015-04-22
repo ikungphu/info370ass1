@@ -21,6 +21,11 @@ namespace FacultyScraper
                 phd = p;
             }
 
+            public string toString()
+            {
+                return name + ", " + university + ", " + department + ", " + phd;
+            }
+
         }
 
         static void Main(string[] args)
@@ -31,7 +36,6 @@ namespace FacultyScraper
             List<Faculty> facultyList = new List<Faculty>();
             foreach (String profile in profiles)
             {
-                //Console.WriteLine(profile);
                 Faculty prof;
                 prof = extractData(profile);
                 if (prof != null)
@@ -40,9 +44,15 @@ namespace FacultyScraper
                 }
             }
 
+            foreach (var faculty in facultyList)
+            {
+                Console.WriteLine(faculty.toString());
+            }
+
             
         }
 
+        // collects all necessary fields from each faculty profile and returns a faculty object
         public static Faculty extractData(string url)
         {
             Faculty prof = null;
@@ -65,15 +75,15 @@ namespace FacultyScraper
                         if (attribute.Contains("name"))
                         {
                             string name = tag.InnerText;
-                            n = name;
+                            n = name.Trim();
                         }
                         else if (attribute.Contains("phd"))
                         {
                             string phd = tag.InnerText;
                             string[] words = phd.Split(',');
-                            p = words[1];
-                            Console.WriteLine(n);
-                            Console.WriteLine(p);
+                            p = words[1].Trim();
+                            //Console.WriteLine(n);
+                            //Console.WriteLine(p);
                             prof = new Faculty(n, u, d, p);
                         }
                     }
