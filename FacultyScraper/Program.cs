@@ -34,15 +34,20 @@ namespace FacultyScraper
         {
             List<Faculty> facultyList = new List<Faculty>();
 
-            List<String> psyProfiles;
-            psyProfiles = getPsyProfiles("https://www.psych.ucla.edu/faculty");
-
             List<String> lawProfiles;
             lawProfiles = getLawProfiles("https://law.ucla.edu/faculty/faculty-profiles/");
+
             foreach (String profile in lawProfiles)
             {
-                Console.WriteLine(profile);
+                // Faculty prof;
+                // prof = 
+                extractLawData(profile);
+
             }
+            
+
+            List<String> psyProfiles;
+            psyProfiles = getPsyProfiles("https://www.psych.ucla.edu/faculty");
 
             foreach (String profile in psyProfiles)
             {
@@ -77,6 +82,62 @@ namespace FacultyScraper
                     sw.WriteLine(faculty.toString());
                 }
             }
+        }
+
+        public static void extractLawData(string url)
+        {
+            Faculty prof = null;
+            string n = "n/a";
+            string l = "n/a";
+            string u = "UCLA";
+            string d = "Law";
+            string p = "n/a";
+
+            HtmlWeb hw = new HtmlWeb();
+            HtmlDocument doc = hw.Load(url);
+
+            //extract names
+            var imgs = doc.DocumentNode.SelectNodes("//img");
+            foreach (var img in imgs)
+            {
+                if (img.Attributes["title"] != null)
+                {
+                    string attribute = img.Attributes["title"].Value;
+                    string[] names = attribute.Split(' ');
+                    n = names[0];
+                    l = names[1];
+                }
+            }
+
+            //extract phds
+            var divTags = doc.DocumentNode.SelectNodes("//div");
+            if (divTags != null)
+            {
+                foreach (var tag in divTags)
+                {
+                    if (tag.Attributes["class"] != null)
+                    {
+                        string attribute = tag.Attributes["class"].Value;
+                        if(attribute.Contains("credential")) {
+                            string content = tag.InnerText.Trim();
+                            string[] split1 = content.Split(',');
+                            string print = "UCLA";
+                            if (split1[0].Contains("Ph.D"))
+                            {
+                                print = split1[0];
+                            } else if (split1[1].Contains("Ph.D")) {
+                                print = split1[1];
+                            } else if (split1[2].Contains("Ph.D")) {
+                                print = split1[2];
+                            } 
+
+                            Console.WriteLine(print);
+                            
+                        }
+                    }
+                }
+            }
+            //return prof;
         }
 
         // collects all necessary fields from each faculty profile and returns a faculty object
