@@ -7,3 +7,12 @@ C:\Users\iguest\Documents\Visual Studio 2013\Projects\FacultyScraper\FacultyScra
 C:\Users\iguest\Documents\Visual Studio 2013\Projects\FacultyScraper\FacultyScraper\obj\Debug\FacultyScraper.csprojResolveAssemblyReference.cache
 C:\Users\iguest\Documents\Visual Studio 2013\Projects\FacultyScraper\FacultyScraper\obj\Debug\FacultyScraper.exe
 C:\Users\iguest\Documents\Visual Studio 2013\Projects\FacultyScraper\FacultyScraper\obj\Debug\FacultyScraper.pdb
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\bin\Debug\FacultyScraper.exe.config
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\obj\Debug\FacultyScraper.exe
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\obj\Debug\FacultyScraper.pdb
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\bin\Debug\FacultyScraper.exe
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\bin\Debug\FacultyScraper.pdb
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\bin\Debug\HtmlAgilityPack.dll
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\bin\Debug\HtmlAgilityPack.xml
+C:\Users\iguest\Desktop\info370ass1\FacultyScraper\obj\Debug\FacultyScraper.csprojResolveAssemblyReference.cache

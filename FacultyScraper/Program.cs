@@ -34,17 +34,13 @@ namespace FacultyScraper
         {
             List<Faculty> facultyList = new List<Faculty>();
 
-            List<String> lawProfiles;
-            lawProfiles = getLawProfiles("https://law.ucla.edu/faculty/faculty-profiles/");
+            List<String> engProfiles;
+            engProfiles = getEngProfiles("http://www.mae.ucla.edu/people/faculty");
 
-            foreach (String profile in lawProfiles)
+            foreach (String profile in engProfiles)
             {
-                // Faculty prof;
-                // prof = 
-                extractLawData(profile);
-
+                Console.WriteLine(profile);
             }
-            
 
             List<String> psyProfiles;
             psyProfiles = getPsyProfiles("https://www.psych.ucla.edu/faculty");
@@ -60,7 +56,44 @@ namespace FacultyScraper
             }
             //--------------------------------------------------------------------
 
-            
+            List<String> lawProfiles;
+            lawProfiles = getLawProfiles("https://law.ucla.edu/faculty/faculty-profiles/");
+
+            foreach (String profile in lawProfiles)
+            {
+                Faculty prof;
+                prof = extractLawData(profile);
+                extractLawData(profile);
+
+                if (prof != null)
+                {
+                    facultyList.Add(prof);
+                }
+            }
+
+            foreach (String profile in lawProfiles)
+            {
+                Faculty prof;
+                prof = extractLawData(profile);
+                extractLawData(profile);
+
+                if (prof != null)
+                {
+                    facultyList.Add(prof);
+                }
+            }
+
+            foreach (String profile in lawProfiles)
+            {
+                Faculty prof;
+                prof = extractLawData(profile);
+                extractLawData(profile);
+
+                if (prof != null)
+                {
+                    facultyList.Add(prof);
+                }
+            }
 
             exportCsv(facultyList);
             
@@ -74,7 +107,7 @@ namespace FacultyScraper
 
         public static void exportCsv(List<Faculty> facultyList)
         {
-            using (StreamWriter sw = new StreamWriter(@"C:\Users\iguest\Documents\Visual Studio 2013\Projects\FacultyScraper\faculty.csv"))
+            using (StreamWriter sw = new StreamWriter(@"C:\Users\iguest\Desktop\info370ass1\faculty.csv"))
             {
                 foreach (var faculty in facultyList)
                 {
@@ -84,7 +117,7 @@ namespace FacultyScraper
             }
         }
 
-        public static void extractLawData(string url)
+        public static Faculty extractLawData(string url)
         {
             Faculty prof = null;
             string n = "n/a";
@@ -121,23 +154,25 @@ namespace FacultyScraper
                         if(attribute.Contains("credential")) {
                             string content = tag.InnerText.Trim();
                             string[] split1 = content.Split(',');
-                            string print = "UCLA";
-                            if (split1[0].Contains("Ph.D"))
+                            string line = "UCLA";
+                            foreach (string school in split1)
                             {
-                                print = split1[0];
-                            } else if (split1[1].Contains("Ph.D")) {
-                                print = split1[1];
-                            } else if (split1[2].Contains("Ph.D")) {
-                                print = split1[2];
-                            } 
+                                if (school.Contains("Ph.D"))
+                                {
+                                    string temp = school;
+                                    string[] partition = temp.Split('.');
+                                    line = partition[2].Trim();
+                                    p = line;
+                                    Console.WriteLine(line);
+                                    prof = new Faculty(n, l, u, d, p);
+                                }
+                            }
 
-                            Console.WriteLine(print);
-                            
                         }
                     }
                 }
             }
-            //return prof;
+            return prof;
         }
 
         // collects all necessary fields from each faculty profile and returns a faculty object
@@ -235,6 +270,31 @@ namespace FacultyScraper
                     if (tag.Attributes["href"] != null)
                     {
                         string newAddress = "https://law.ucla.edu" + tag.Attributes["href"].Value;
+                        if (newAddress.Contains("faculty-profiles/") && !profiles.Contains(newAddress))
+                        {
+                            profiles.Add(newAddress);
+                        }
+                    }
+                }
+            }
+            return profiles;
+        }
+
+        public static List<String> getEngProfiles(string address)
+        {
+            //sets the target url
+            HtmlWeb hw = new HtmlWeb();
+            HtmlDocument doc = hw.Load(address);
+            List<String> profiles = new List<String>();
+
+            var aTags = doc.DocumentNode.SelectNodes("//a");
+            if (aTags != null)
+            {
+                foreach (var tag in aTags)
+                {
+                    if (tag.Attributes["href"] != null)
+                    {
+                        string newAddress = "https://www.mae.ucla.edu/people/faculty/" + tag.Attributes["href"].Value;
                         if (newAddress.Contains("faculty-profiles/") && !profiles.Contains(newAddress))
                         {
                             profiles.Add(newAddress);
