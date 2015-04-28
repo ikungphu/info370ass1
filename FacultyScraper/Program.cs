@@ -34,13 +34,30 @@ namespace FacultyScraper
         {
             List<Faculty> facultyList = new List<Faculty>();
 
-            List<String> engProfiles;
+            List<String> psychProfiles;
+            psychProfiles = getPsychProfiles("https://psychology.clas.asu.edu/asu_directory?title=12");
+
+            foreach (String profile in psychProfiles)
+            {
+                Faculty prof;
+                prof = extractPsychData(profile);
+                if (prof != null)
+                {
+                    facultyList.Add(prof);
+                }
+            }
+
+
+
+            //------------------------------------------------------------------------
+
+            /*List<String> engProfiles;
             engProfiles = getEngProfiles("http://www.mae.ucla.edu/people/faculty");
 
             foreach (String profile in engProfiles)
             {
                 Console.WriteLine(profile);
-            }
+            } */
 
             List<String> psyProfiles;
             psyProfiles = getPsyProfiles("https://www.psych.ucla.edu/faculty");
@@ -107,7 +124,7 @@ namespace FacultyScraper
 
         public static void exportCsv(List<Faculty> facultyList)
         {
-            using (StreamWriter sw = new StreamWriter(@"C:\Users\iguest\Desktop\info370ass1\faculty.csv"))
+            using (StreamWriter sw = new StreamWriter(@"C:\Users\iguest\Desktop\faculty.csv"))
             {
                 foreach (var faculty in facultyList)
                 {
@@ -175,6 +192,52 @@ namespace FacultyScraper
             return prof;
         }
 
+        public static Faculty extractPsychData(string url)
+        {
+            Faculty prof = null;
+            string n = "n/a";
+            string l = "n/a";
+            string u = "ASU";
+            string d = "Psychology";
+            string p = "n/a";
+
+            HtmlWeb hw = new HtmlWeb();
+            HtmlDocument doc = hw.Load(url);
+
+            var h1 = doc.DocumentNode.SelectNodes("//h1");
+            if (h1 != null)
+            {
+                foreach (var tag in h1)
+                {
+                    var names = tag.InnerText;
+                    string[] words = names.Split(' ');
+                    n = words[0];
+                    l = words[1];
+                }
+            }
+            
+
+            var pTags = doc.DocumentNode.SelectNodes("//p");
+            if (pTags != null)
+            {
+                foreach (var tag in pTags)
+                {
+                    if (tag.InnerText != null)
+                    {
+                        string attribute = tag.InnerText;
+                        if (attribute.Contains("Ph.D"))
+                        {
+                            string name = attribute.Trim();
+                            string[] words = name.Split(' ');
+                            p = words[1].Trim();
+                            prof = new Faculty(n, l, u, d, p);
+                        }
+                    }
+                }
+            }
+            return prof;
+        }
+
         // collects all necessary fields from each faculty profile and returns a faculty object
         public static Faculty extractPsyData(string url)
         {
@@ -225,6 +288,34 @@ namespace FacultyScraper
                 }
             }
             return prof;
+        }
+
+        //opens asu psychology root url and gets urls for each faculty's web page
+        public static List<String> getPsychProfiles(string address)
+        {
+            //sets the target url
+            HtmlWeb hw = new HtmlWeb();
+            HtmlDocument doc = hw.Load(address);
+            List<String> profiles = new List<String>();
+
+            //collects all of the links on the web page
+            var aTags = doc.DocumentNode.SelectNodes("//a");
+            if (aTags != null)
+            {
+                //for every link isolate links that contain a faculty profile page and return it in a list
+                foreach (var tag in aTags)
+                {
+                    if (tag.Attributes["href"] != null)
+                    {
+                        string newAddress = "https://psychology.clas.asu.edu" + tag.Attributes["href"].Value;
+                        if (newAddress.Contains("faculty/"))
+                        {
+                            profiles.Add(newAddress);
+                        }
+                    }
+                }
+            }
+            return profiles;
         }
 
         //opens ucla psychology root url and gets urls for each faculty's personal web page
